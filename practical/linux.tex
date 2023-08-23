@@ -2060,4 +2060,229 @@ later.
 
 
 
+\newpage
+
+
+
+
+
+    \hypertarget{linux-quick-reference-guide}{%
+\section{Linux Quick Reference
+Guide}\label{linux-quick-reference-guide}}
+
+\hypertarget{looking-at-files-and-moving-them-around}{%
+\subsection{Looking at files and moving them
+around}\label{looking-at-files-and-moving-them-around}}
+
+\begin{verbatim}
+pwd # Tell me which directory I'm in
+ls # What else is in this directory
+ls .. # What is in the directory above me
+ls foo/bar/ # What is inside the bar directory which is inside the foo/ directory
+ls -lah foo/ # Give the the details (-l) of all files and folders (-a) using human
+             # readable file sizes (-h)
+cd ../.. # Move up two directories
+cd ../foo/bar # Move up one directory and down into the foo/bar/ subdirectories
+cp -r foo/ baz/ # Copy the foo/ directory into the baz/ directory
+mv baz/foo .. # Move the foo directory into the parent directory
+rm -r ../foo # remove the directory called foo/ from the parent directory
+find foo/ -name "*.gff" # find all the files with a gff extension in the directory foo/
+\end{verbatim}
+
+\hypertarget{looking-in-files}{%
+\subsection{Looking in files}\label{looking-in-files}}
+
+\begin{verbatim}
+less bar.bed # scroll through bar.bed
+grep chrom bar.bed | less -S # Only look at lines in bar.bed which have 'chrom' and
+                             # don't wrap lines (-S)
+head -20 bar.bed # show me the first 20 lines of bar.bed
+tail -20 bar.bed # show me the last 20 lines
+cat bar.bed # show me all of the lines (bad for big files)
+wc -l bar.bed # how many lines are there
+sort -k 2 -n bar.bed # sort by the second column in numerical order
+\end{verbatim}
+
+\hypertarget{grep}{%
+\subsection{Grep}\label{grep}}
+
+\begin{verbatim}
+grep foo bar.bed # show me the lines in bar.bed with 'foo' in them
+grep foo baz/* # show me all examples of foo in the files immediately within baz/
+grep -r foo baz/ # show me all examples of foo in baz/ and every subdirectory within it
+grep '^foo' bar.bed # show me all of the lines begining with foo
+grep 'foo$' bar.bed # show me all of the lines ending in foo
+grep -i '^[acgt]$' bar.bed # show me all of the lines which only have the characters
+                           # a,c,g and t (ignoring their case)
+grep -v foo bar.bed # don't show me any files with foo in them
+\end{verbatim}
+
+\hypertarget{awk}{%
+\subsection{Awk}\label{awk}}
+
+\begin{verbatim}
+awk '{print $1}' bar.bed # just the first column
+awk '$4 ~ /^foo/' bar.bed # just rows where the 4th column starts with foo
+awk '$4 == "foo" {print $1}' bar.bed # the first column of rows where the 4th column is foo
+awk -F"\t" '{print $NF}' bar.bed # ignore spaces and print the last column
+awk -F"\t" '{print $(NF-1)}' bar.bed # print the penultimate column
+\end{verbatim}
+
+\hypertarget{piping-redirection-and-more-advanced-queries}{%
+\subsection{Piping, redirection and more advanced
+queries}\label{piping-redirection-and-more-advanced-queries}}
+
+\begin{verbatim}
+grep -hv '^#' bar/*.gff | sort
+#  grep => -h: don't print file names
+#          -v: don't give me matching files
+#          '^#': get rid of the header rows
+#          'bar/*.gff': only look in the gff files in bar/
+#  sort => sort results returned from grep
+\end{verbatim}
+
+\hypertarget{a-script}{%
+\subsection{A script}\label{a-script}}
+
+\begin{verbatim}
+#!/usr/bin/env bash
+
+set -e # stop running the script if there are errors
+set -u # stop running the script if it uses an unknown variable
+set -x # print every line before you run it (useful for debugging but annoying)
+
+if [ $# -ne 2 ]
+then
+  echo "You must provide two files"
+  exit 1 # exit the programme (and number > 0 reports that this is a failure)
+fi
+
+file_one=$1
+file_two=$2
+
+if [ ! -f $file_one ]
+then
+  echo "The first file couldn't be found"
+  exit 2
+fi
+
+if [ ! -f $file_two ]
+then
+  echo "The second file couldn't be found"
+  exit 2
+fi
+
+# Get the lines which aren't headers,
+# take the first column and return the unique values
+number_of_contigs_in_one=$(awk '$1 !~ /^#/ {print $1}' $file_one | sort -u | wc -l)
+number_of_contigs_in_two=$(awk '/^[^#]/ {print $1}' $file_two | sort -u | wc -l)
+
+if [ $number_of_contigs_in_one -gt $number_of_contigs_in_two ]
+then
+  echo "The first file had more unique contigs than the second"
+  exit
+elif [ $number_of_contigs_in_one -lt $number_of_contigs_in_two ]
+then
+  echo "The second file had more unique contigs"
+  exit
+else
+  echo "The two files had the same number of contigs"
+  exit
+fi
+\end{verbatim}
+
+\hypertarget{pro-tips}{%
+\subsection{Pro tips}\label{pro-tips}}
+
+\begin{itemize}
+\tightlist
+\item
+  Use tab completion - it will save you time!
+\item
+  Always have a quick look at files with \texttt{less} or \texttt{head}
+  to double check their format
+\item
+  Watch out for data in headers and that you don't accidentally grep
+  some if you don't want them
+\item
+  Watch out for spaces, especially if you're using awk; if in doubt, use
+  \texttt{-F"\textbackslash{}t"}
+\item
+  Regular expressions are wierd, build them up slowly bit by bit
+\item
+  If you did something smart but can't remember what it was, try typing
+  \texttt{history} and it might have a record
+\item
+  \texttt{man\ the\_name\_of\_a\_command} often gives you help
+\item
+  Google is normally better at giving examples (prioritise
+  stackoverflow.com results, they're normally good)
+\end{itemize}
+
+\hypertarget{which-tool-should-i-use}{%
+\subsection{Which tool should I use?}\label{which-tool-should-i-use}}
+
+You should probable use grep if:
+
+\begin{itemize}
+\tightlist
+\item
+  you're looking for files which contain some specific text
+  (e.g.~\texttt{grep\ -r\ foo\ bar/}: look in all the files in
+  \texttt{bar/} for any with the word `foo')
+\end{itemize}
+
+You should probably use awk if:
+
+\begin{itemize}
+\tightlist
+\item
+  your data has columns
+\item
+  you need to do simple maths
+\end{itemize}
+
+You should use find if:
+
+\begin{itemize}
+\tightlist
+\item
+  you know something about a file (like it's name or creation date) but
+  not where it is
+\item
+  you want a list of all the files in a subdirectory and its
+  subdirectories etc.
+\end{itemize}
+
+You should write a script if:
+
+\begin{itemize}
+\tightlist
+\item
+  your code doesn't fit on one line
+\item
+  it's doing something you might want to do again in 3 months
+\item
+  you want someone else to be able to do it without asking loads of
+  questions
+\item
+  you're doing something sensitive (e.g.~deleting loads of files)
+\item
+  you're doing something lots of times
+\end{itemize}
+
+You should probably use less or head:
+
+\begin{itemize}
+\tightlist
+\item
+  always, you should always use less or head to check intermediary steps
+  in your analysis
+\end{itemize}
+
+
+    % Add a bibliography block to the postdoc
+
+
+
 \end{document}
