@@ -439,15 +439,6 @@ In this course we will use Linux, a Unix-like operating system which was
 originally created to provide a free open source operating system for
 PCs.
 
-Linux and MS Windows both perform the important job of managing the
-computer's hardware (screen, keyboard, mouse, hard disks, network
-connections, etc\ldots) on your behalf. They also provide you with tools
-to manage your files and to run application software. They both offer a
-graphical user interface (desktop). These desktop interfaces look
-different between the operating systems, use different names for things
-(e.g.~directory versus folder) and have different images but they mostly
-offer the same functionality.
-
 Linux is a powerful, secure, robust and stable operating system which
 allows dozens of people to run programs on the same computer at the same
 time. This is why it is the preferred operating system for large-scale
@@ -506,8 +497,13 @@ This tutorial comprises the following sections:
   \href{bash.ipynb}{Bash scripting}
 \end{enumerate}
 
-\textbf{Note:} We do not expect you to get through all the material in
-the time allocated and a good target to aim for is the end of section 3
+\textbf{Note:} If you are an experienced linux user then please feel
+free to skip the \href{basic.ipynb}{Basic Linux} section and move
+directly to the section \href{grep_and_awk.ipynb}{Commands grep and
+awk}.
+
+Also, do not worry if you do not complte all sections in the time
+allocated, a good target to aim for is the end of section 3
 \href{advanced_linux.ipynb}{Advanced Linux (loops and Bash scripts)}.
 The remaining sections are optional and are for students who would like
 to expand their Linux skills and can be completed outside the course
@@ -579,8 +575,6 @@ The commandline or `terminal' is an interface you can use to run
 programs and analyse your data. If this is your first time using one it
 will seem pretty daunting at first but, with just a few commands, you'll
 start to see how it helps you to get things done more efficiently.
-You're probably more familiar with software which uses a graphical user
-interface, also known as a GUI.
 
     \hypertarget{getting-started}{%
 \subsection{Getting started}\label{getting-started}}
@@ -611,6 +605,11 @@ ls
 \end{Verbatim}
 \end{tcolorbox}
 
+    You should see 6 items:
+
+\texttt{advanced\_linux} \texttt{awk} \texttt{bash\_scripts}
+\texttt{basic} \texttt{files} \texttt{grep}
+
     Before getting started there are some general points to remember that
 will make your life easier:
 
@@ -622,7 +621,7 @@ will make your life easier:
 \item
   Often when you have problems with Linux, it is due to a spelling
   mistake. Check that you have not missed or added a space. Pay careful
-  attention when typing commands across a couple of lines.
+  attention if typing commands across multiple lines.
 \end{itemize}
 
     \hypertarget{files-and-directories}{%
@@ -633,21 +632,42 @@ They are organised in a hierarchy, so directories can have
 sub-directories and so on. Directories are very useful for organising
 your work and keeping your account tidy - for example, if you have more
 than one project, you can organise the files for each project into
-different directories to keep them separate. You can think of
-directories as rooms in a house. You can only be in one room (directory)
-at a time. When you are in a room you can see everything in that room
-easily. To see things in other rooms, you have to go to the appropriate
-door and crane your head around. Linux works in a similar manner, moving
-from directory to directory to access files. The location or directory
-that you are in is referred to as the current working directory.
+different directories to keep them separate.
 
-For the file called \texttt{index.ipynb} under the \texttt{linux}
-directory, the location or \textit{absolute path} can be expressed as:
+The start of the filesystem is known as the root directory and denoted
+with \texttt{/} symbol. The location or directory that you are in at any
+given time is referred to as the current working directory denoted with
+the \texttt{.} symbol.
+
+Every file and directory on the computer is found in a specific
+location. The location is specified as a path to that file or directory
+and can be expresed as either the \textit{relative path} or \textit{absolute
+path}.
+
+The \textit{relative path} is the location of a file or directory from the
+current working directory (.).
+
+The \textit{absolute path} is the location of a file or directory from the
+start of the file system or root directory (/).
+
+    For example, for the file called \texttt{directory\_structure.png} under
+the \texttt{linux} directory, the location or \textit{relative path} can
+be expressed as:
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-ls\PY{+w}{ }/home/manager/course\PYZus{}data/linux/practical/Notebooks/index.ipynb
+ls\PY{+w}{ }./basic/directory\PYZus{}structure.png
+\end{Verbatim}
+\end{tcolorbox}
+
+    The location of this file can also be expressed using the \textit{absolute
+path} as:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+ls\PY{+w}{ }/home/manager/course\PYZus{}data/linux/basic/directory\PYZus{}structure.png
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -693,78 +713,6 @@ copying and pasting.
 \end{Verbatim}
 \end{tcolorbox}
 
-    \hypertarget{ls---list-the-contents-of-a-directory}{%
-\subsection{ls - list the contents of a
-directory}\label{ls---list-the-contents-of-a-directory}}
-
-The command \texttt{ls} stands for list. The \texttt{ls} command can be
-used to list the contents of a directory.
-
-To list the contents of your current working directory type:
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-ls
-\end{Verbatim}
-\end{tcolorbox}
-
-    You should see that there are 4 items in this directory.
-
-    To list all contents of a directory including hidden files and
-directories (hidden files and directories are not shown by default and
-are used to help prevent important data from being deleted) type:
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-ls\PY{+w}{ }\PYZhy{}a\PY{+w}{ }\PYZhy{}l
-\end{Verbatim}
-\end{tcolorbox}
-
-    This is an example of a command which can take multiple options at the
-same time.
-
-How many hidden files and directories are there?
-
-Try the same command but with the \texttt{-h} option:
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-ls\PY{+w}{ }\PYZhy{}alh
-\end{Verbatim}
-\end{tcolorbox}
-
-    You'll also notice that we've combined \texttt{-a\ -l\ -h} into what
-appears to be a single \texttt{-alh} option. It's almost always ok to do
-this for options which are made up of a single dash followed by a single
-letter.
-
-What does the \texttt{-h} option do?
-
-To list the contents of the directory called Pfalciparum with extra
-information type:
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-ls\PY{+w}{ }\PYZhy{}l\PY{+w}{ }Styphi/
-\end{Verbatim}
-\end{tcolorbox}
-
-    Here we gave the command \texttt{ls} the \textit{option} \texttt{-l} and
-the \textit{argument} \texttt{Styphi}. Arguments are very similar to
-options, they are used to provide additional information to a command
-and often refer to things which are not prefixed with dashes.
-
-In this example we have provided information about the directory that we
-want to list the contents of, this argument \texttt{Styphi} is the
-\textit{relative path} to the directory \texttt{Styphi} from our current
-working directory.
-
-How many files are there in this directory?
-
     \hypertarget{getting-help-man}{%
 \subsection{Getting help man}\label{getting-help-man}}
 
@@ -800,12 +748,13 @@ find\PY{+w}{ }.\PY{+w}{ }\PYZhy{}name\PY{+w}{ }*.gff
 
     How many gff files did you find?
 
-    To find all the subdirectories contained in the current directory type:
+    Can you construct a command to find all the subdirectories contained in
+the current directory?
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-find\PY{+w}{ }.\PY{+w}{ }\PYZhy{}type\PY{+w}{ }d
+
 \end{Verbatim}
 \end{tcolorbox}
 
@@ -888,26 +837,13 @@ command \texttt{cd}) and then complete the exercise below.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Use the \texttt{ls} command to show the contents of the \texttt{basic}
-  directory.
+  List the contents of the directory
+\item
+  How many files are there in the \texttt{Styphi} directory?
 \item
   How many files are there in the \texttt{Pfalciparum} directory?
 \item
-  What is the largest file in the \texttt{Pfalciparum} directory?
-\item
-  Move into the \texttt{Pfalciparum} directory.
-\item
-  How many files are there in the \texttt{fasta} directory?
-\item
-  Copy the file \texttt{Pfalciparum.bed} in the \texttt{Pfalciparum}
-  directory into the \texttt{annotation} directory.
-\item
-  Move all the fasta files in the directory \texttt{Pfalciparum} to the
-  \texttt{fasta} directory.
-\item
-  How many files are there in the \texttt{fasta} directory?
-\item
-  Use the \texttt{find} command to find all gff files in the
+  Use the \texttt{find} command to find all the gff files in the
   \texttt{linux} directory, how many files did you find?
 \item
   Use the \texttt{find} command to find all the fasta files in the
